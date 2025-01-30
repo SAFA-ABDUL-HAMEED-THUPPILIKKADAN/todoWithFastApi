@@ -5,3 +5,11 @@ uvicorn
 sqlalchemy
 
 psycopg[binary]
+
+python-jose
+
+passlib
+
+bcrypt
+
+python-multipart
