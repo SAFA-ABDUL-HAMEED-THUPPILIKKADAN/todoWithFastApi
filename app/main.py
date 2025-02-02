@@ -7,8 +7,18 @@ from fastapi.responses import JSONResponse
 from .hashing import Hash
 from . import oauth2
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    # Allow all origins (for development; restrict in production)
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
 
 models.Base.metadata.create_all(engine)
 
@@ -19,13 +29,24 @@ def unpublished():
 
 
 @app.post('/signup')
-def create(request: schemas.User, db: Session = Depends(database.get_db)):
+def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
+    # Check if the email already exists
+    existing_user = db.query(models.User).filter(
+        models.User.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Create new user
     new_user = models.User(
-        name=request.name, email=request.email,  password=Hash.bcrypt(request.password))
+        name=request.name,
+        email=request.email,
+        password=Hash.bcrypt(request.password)
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+
+    return {"message": "User created successfully", "user": new_user}
 
 
 @app.post('/login')
