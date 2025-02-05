@@ -85,9 +85,12 @@ def createTodo(request: schemas.Todo, db: Session = Depends(database.get_db), cu
     return new_todo
 
 
-@app.get('/getAll', response_model=List[schemas.Todo])
+@app.get('/getAll', response_model=schemas.Todo)
 def all(db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    todos = db.query(models.Todo).all()
+    user = db.query(models.User).filter(
+        models.User.email == current_user.email).first()
+    todos = db.query(models.Todo).filter(
+        models.Todo.creator_id == user.id).first()
     return todos
 
 
