@@ -1,6 +1,7 @@
 
 from pydantic import BaseModel
-from datetime import date
+from typing import Optional
+from datetime import datetime
 
 
 class User(BaseModel):
@@ -19,8 +20,14 @@ class ShowUser(BaseModel):
 
 class Todo(BaseModel):
     title: str
-    deadline: date
+    deadline: datetime
     isCompleted: bool
+
+
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    deadline: Optional[datetime] = None
+    isCompleted: Optional[bool] = None
 
 
 class Token(BaseModel):
