@@ -22,6 +22,7 @@ class Todo(BaseModel):
     title: str
     deadline: datetime
     isCompleted: bool
+    completedAt: Optional[datetime] = None
 
 
 class TodoUpdate(BaseModel):

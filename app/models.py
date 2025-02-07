@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey, DateTime
 from .database import Base
 from datetime import date
 from sqlalchemy.orm import relationship
@@ -20,6 +20,7 @@ class Todo(Base):
     title = Column(String)
     deadline = Column(Date, nullable=False)
     createdAt = Column(Date, nullable=False, default=date.today)
+    completedAt = Column(Date, nullable=True)
     isCompleted = Column(Boolean, nullable=False, default=True)
     creator_id = Column(Integer, ForeignKey('signupuser.id'))
 
